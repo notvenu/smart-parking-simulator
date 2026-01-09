@@ -1,149 +1,132 @@
-import './Dashboard.css'
+import React from 'react'
 
 function Dashboard({ stats }) {
-  const { totalSlots, occupiedSlots, occupancyPercent, isFull } = stats
-
   const getStatusColor = () => {
-    if (isFull) return '#ff4444'
-    if (occupancyPercent > 80) return '#ff9500'
-    if (occupancyPercent > 50) return '#ffcc00'
-    return '#4caf50'
+    if (stats.isFull) return 'text-red-400'
+    if (stats.occupancyPercent >= 90) return 'text-orange-400'
+    if (stats.occupancyPercent >= 70) return 'text-amber-400'
+    if (stats.occupancyPercent >= 50) return 'text-yellow-400'
+    return 'text-green-400'
   }
 
-  const getStatusLabel = () => {
-    if (isFull) return 'FULL'
-    if (occupancyPercent > 80) return 'CRITICAL'
-    if (occupancyPercent > 50) return 'HIGH'
-    if (occupancyPercent > 30) return 'MODERATE'
+  const getStatusText = () => {
+    if (stats.isFull) return 'FULL'
+    if (stats.occupancyPercent >= 90) return 'CRITICAL'
+    if (stats.occupancyPercent >= 70) return 'HIGH'
+    if (stats.occupancyPercent >= 50) return 'MODERATE'
     return 'LOW'
   }
 
+  const getProgressColor = () => {
+    if (stats.isFull) return '#ef4444'
+    if (stats.occupancyPercent >= 90) return '#f97316'
+    if (stats.occupancyPercent >= 70) return '#f59e0b'
+    if (stats.occupancyPercent >= 50) return '#eab308'
+    return '#22c55e'
+  }
+
+  const circumference = 2 * Math.PI * 54
+  const strokeDashoffset = circumference - (stats.occupancyPercent / 100) * circumference
+
   return (
-    <div className="dashboard">
-      <div className="dashboard-section status-section">
-        <h2>System Status</h2>
-        <div className="status-card">
-          <div className="status-visual">
-            <div className="status-ring">
-              <svg viewBox="0 0 100 100" className="progress-ring-svg">
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.1)"
-                  strokeWidth="8"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  fill="none"
-                  stroke={getStatusColor()}
-                  strokeWidth="8"
-                  strokeDasharray={`${(occupancyPercent / 100) * 283} 283`}
-                  transform="rotate(-90 50 50)"
-                  className="progress-ring"
-                />
-                <text x="50" y="50" textAnchor="middle" dy="0.3em" className="progress-text">
-                  {occupancyPercent}%
-                </text>
-              </svg>
-            </div>
-            <div className="status-indicator">
-              <div className="status-label" style={{ color: getStatusColor() }}>
-                {getStatusLabel()}
-              </div>
-              <div className="status-subtext">Overall Occupancy</div>
-            </div>
-          </div>
-          <div className="status-details">
-            <div className="detail-row">
-              <span>Total Capacity:</span>
-              <strong>{totalSlots}</strong>
-            </div>
-            <div className="detail-row">
-              <span>Occupied:</span>
-              <strong style={{ color: '#ff6b6b' }}>{occupiedSlots}</strong>
-            </div>
-            <div className="detail-row">
-              <span>Available:</span>
-              <strong style={{ color: '#51cf66' }}>{totalSlots - occupiedSlots}</strong>
-            </div>
+    <div className="glass rounded-2xl p-6 space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-gradient mb-2">Live Dashboard</h2>
+        <p className="text-sm text-white/60">Real-time occupancy status</p>
+      </div>
+
+      {/* Circular Progress */}
+      <div className="flex justify-center">
+        <div className="relative w-48 h-48">
+          <svg className="transform -rotate-90 w-48 h-48">
+            {/* Background Circle */}
+            <circle
+              cx="96"
+              cy="96"
+              r="54"
+              stroke="rgba(255, 255, 255, 0.1)"
+              strokeWidth="12"
+              fill="none"
+            />
+            {/* Progress Circle */}
+            <circle
+              cx="96"
+              cy="96"
+              r="54"
+              stroke={getProgressColor()}
+              strokeWidth="12"
+              fill="none"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="transition-all duration-1000"
+              style={{
+                filter: `drop-shadow(0 0 8px ${getProgressColor()})`
+              }}
+            />
+          </svg>
+          {/* Center Text */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className={`text-4xl font-bold ${getStatusColor()}`}>
+              {stats.occupancyPercent}%
+            </span>
+            <span className="text-xs text-white/60 mt-1">Occupied</span>
           </div>
         </div>
       </div>
 
-      <div className="dashboard-section breakdown-section">
-        <h2>Capacity Breakdown</h2>
-        <div className="capacity-bars">
-          <div className="capacity-item">
-            <div className="capacity-header">
-              <span>🚗 Cars</span>
-              <span>{stats.carStats.occupied}/{stats.carStats.total}</span>
-            </div>
-            <div className="capacity-bar">
-              <div 
-                className="capacity-fill car-fill"
-                style={{ width: `${(stats.carStats.occupied / stats.carStats.total) * 100}%` }}
-              ></div>
-            </div>
+      {/* Status Badge */}
+      <div className="flex justify-center">
+        <div className={`px-4 py-2 rounded-full glass-dark border ${getStatusColor()}`}
+             style={{ borderColor: getProgressColor() }}>
+          <span className={`text-sm font-bold ${getStatusColor()}`}>
+            {getStatusText()} USAGE
+          </span>
+        </div>
+      </div>
+
+      {/* Capacity Breakdown */}
+      <div className="space-y-3">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-white/70">🚗 Car Capacity</span>
+            <span className="text-sm font-semibold text-blue-300">
+              {stats.carStats.occupied}/{stats.carStats.total}
+            </span>
           </div>
-          
-          <div className="capacity-item">
-            <div className="capacity-header">
-              <span>🏍️ Bikes</span>
-              <span>{stats.bikeStats.occupied}/{stats.bikeStats.total}</span>
-            </div>
-            <div className="capacity-bar">
-              <div 
-                className="capacity-fill bike-fill"
-                style={{ width: `${(stats.bikeStats.occupied / stats.bikeStats.total) * 100}%` }}
-              ></div>
-            </div>
+          <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
+            <div
+              className="absolute h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full transition-all duration-500"
+              style={{ width: `${(stats.carStats.occupied / stats.carStats.total) * 100}%` }}
+            ></div>
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-white/70">🏍️ Bike Capacity</span>
+            <span className="text-sm font-semibold text-purple-300">
+              {stats.bikeStats.occupied}/{stats.bikeStats.total}
+            </span>
+          </div>
+          <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
+            <div
+              className="absolute h-full bg-gradient-to-r from-purple-500 to-purple-400 rounded-full transition-all duration-500"
+              style={{ width: `${(stats.bikeStats.occupied / stats.bikeStats.total) * 100}%` }}
+            ></div>
           </div>
         </div>
       </div>
 
-      <div className="dashboard-section alerts-section">
-        <h2>System Alerts</h2>
-        <div className="alerts-container">
-          {isFull && (
-            <div className="alert alert-critical">
-              <span className="alert-icon">🚨</span>
-              <div className="alert-content">
-                <strong>PARKING FULL</strong>
-                <p>All slots occupied. Vehicles must wait for exit.</p>
-              </div>
-            </div>
-          )}
-          {occupancyPercent > 80 && !isFull && (
-            <div className="alert alert-warning">
-              <span className="alert-icon">⚠️</span>
-              <div className="alert-content">
-                <strong>HIGH OCCUPANCY</strong>
-                <p>Above 80% capacity. Only {totalSlots - occupiedSlots} spaces remaining.</p>
-              </div>
-            </div>
-          )}
-          {occupancyPercent > 50 && occupancyPercent <= 80 && (
-            <div className="alert alert-info">
-              <span className="alert-icon">ℹ️</span>
-              <div className="alert-content">
-                <strong>MODERATE OCCUPANCY</strong>
-                <p>System operating normally at {occupancyPercent}% capacity.</p>
-              </div>
-            </div>
-          )}
-          {occupancyPercent <= 50 && (
-            <div className="alert alert-success">
-              <span className="alert-icon">✅</span>
-              <div className="alert-content">
-                <strong>LOW OCCUPANCY</strong>
-                <p>Plenty of parking available. {totalSlots - occupiedSlots} spaces free.</p>
-              </div>
-            </div>
-          )}
+      {/* Quick Stats Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="glass-dark rounded-xl p-3 text-center">
+          <div className="text-2xl font-bold text-green-400">{stats.availableSlots}</div>
+          <div className="text-xs text-white/60 mt-1">Available</div>
+        </div>
+        <div className="glass-dark rounded-xl p-3 text-center">
+          <div className="text-2xl font-bold text-blue-400">{stats.occupiedSlots}</div>
+          <div className="text-xs text-white/60 mt-1">Occupied</div>
         </div>
       </div>
     </div>
