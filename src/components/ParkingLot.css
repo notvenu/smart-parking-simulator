@@ -1,0 +1,175 @@
+.parking-lot {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.lot-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.lot-header h2 {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lot-summary {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.section-container {
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-header h3 {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.section-info {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.entry-gate-top {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+  margin-bottom: 1rem;
+}
+
+.entry-gate-top.bike-gate {
+  background: linear-gradient(135deg, var(--accent-color) 0%, #f5576c 100%);
+  box-shadow: 0 4px 16px rgba(240, 147, 251, 0.3);
+}
+
+.exit-gate-bottom {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(255, 107, 107, 0.3);
+  margin-top: 1rem;
+}
+
+.exit-gate-bottom.bike-gate {
+  background: linear-gradient(135deg, #74c0fc 0%, #339af0 100%);
+  box-shadow: 0 4px 16px rgba(116, 192, 252, 0.3);
+}
+
+.gate-icon {
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+}
+
+.parking-grid {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+}
+
+.car-section {
+  min-height: 300px;
+}
+
+.bike-section {
+  min-height: 200px;
+}
+
+.legend {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border-radius: 12px;
+  flex-wrap: wrap;
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.legend-color.free {
+  background: var(--success-color);
+}
+
+.legend-color.occupied {
+  background: var(--danger-color);
+}
+
+.legend-color.highlighted {
+  background: linear-gradient(135deg, #ffd43b 0%, var(--warning-color) 100%);
+  box-shadow: 0 0 8px rgba(255, 212, 59, 0.6);
+}
+
+.legend-color.partial {
+  background: linear-gradient(135deg, var(--info-color) 0%, #339af0 100%);
+}
+
+@media (max-width: 1024px) {
+  .parking-grid {
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+  
+  .section-container {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .lot-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .legend {
+    gap: 1rem;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+}
